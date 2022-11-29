@@ -15,9 +15,7 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    chosenTime = selectedDates[0].getTime();
-    isAvaibleDate = chosenTime - Date.now();
-    if (isAvaibleDate <= 0) {
+    if (selectedDates[0] <= Date.now()) {
       window.alert(
         'You cannot select a past date. Please choose a date in the future'
       );
@@ -27,7 +25,7 @@ const options = {
   },
 };
 
-flatpickr('#datetime-picker', options);
+const elFlatpickr = flatpickr('#datetime-picker', options);
 
 class Timer {
   constructor() {
@@ -42,11 +40,11 @@ class Timer {
 
     this.isActive = true;
 
-    const currentTime = Date.now();
-    let deltaTime = chosenTime - currentTime;
-
     this.intervals = setInterval(() => {
-      deltaTime = deltaTime -= 1000;
+      let choosenTime = elFlatpickr.selectedDates[0];
+      let currentTime = Date.now();
+      let deltaTime = choosenTime - currentTime;
+      // deltaTime = deltaTime -= 1000;
       const time = convertMs(deltaTime);
       updateClockFace(time);
       if (deltaTime <= 1000) {
